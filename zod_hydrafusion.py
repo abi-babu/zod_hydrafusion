@@ -119,10 +119,10 @@ def visualize_predictions_vs_ground_truth(
 
 def validate_bbox(bbox):
     if bbox is None or bbox.numel() == 0:
-        print("⚠️ Skipping empty bbox.")
+        print("Skipping empty bbox.")
         return None
     if bbox.dim() < 2 or bbox.shape[1] != 4:
-        print(f"⚠️ Invalid bbox shape: {bbox.shape}")
+        print(f"Invalid bbox shape: {bbox.shape}")
         return None
     return bbox
 
@@ -157,7 +157,7 @@ model = HydraFusion(cfg).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 checkpoint = "hydrafusion_trained_frame.pth"
 if os.path.exists(checkpoint):
-    print("✅ Resuming from checkpoint...")
+    print("Resuming from checkpoint...")
     model.load_state_dict(torch.load(checkpoint, map_location=device))
 else:
     print("🚀 Starting training from scratch...")
@@ -201,7 +201,7 @@ for epoch in range(num_epochs):
         if bbox_2d is None or bbox_2d.numel() == 0 or bbox_2d.shape[-1] != 4 or target_labels is None:
             continue
         if bbox_2d.numel() == 0:
-            print(f"⚠️ Skipping Frame {idx+1}: No ground truth bounding boxes.")
+            print(f"Skipping Frame {idx+1}: No ground truth bounding boxes.")
             continue
         bbox = validate_bbox(bbox_2d)
         if bbox is None:
@@ -238,8 +238,8 @@ for epoch in range(num_epochs):
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {total_loss:.4f}") 
 
     torch.save(model.state_dict(), checkpoint)
-    print(f"💾 Checkpoint saved at epoch {epoch+1}")
-print("✅ Model Training Completed & Saved.") 
+    print(f"Checkpoint saved at epoch {epoch+1}")
+print("Model Training Completed & Saved.") 
 
 weights_path = "hydrafusion_trained_frame.pth"
 model.load_state_dict(torch.load(weights_path, map_location=device))
@@ -282,7 +282,7 @@ with torch.no_grad():  # Disable gradient tracking for validation
         if bbox_2d is None or bbox_2d.numel() == 0 or bbox_2d.shape[-1] != 4 or target_labels is None:
             continue
         if bbox_2d.numel() == 0:
-            print(f"⚠️ Skipping Frame {idx+1}: No ground truth bounding boxes.")
+            print(f"Skipping Frame {idx+1}: No ground truth bounding boxes.")
             continue
         bbox = validate_bbox(bbox_2d)
         if bbox is None:
@@ -318,7 +318,7 @@ with torch.no_grad():  # Disable gradient tracking for validation
         if pred_boxes.ndim == 1 and pred_boxes.shape[0] == 4:
             pred_boxes = pred_boxes.reshape(1, 4)
         elif pred_boxes.ndim != 2 or pred_boxes.shape[1] != 4:
-            print(f"⚠️ Frame {batch_idx}: Invalid pred_boxes shape {pred_boxes.shape}, skipping visualization.")
+            print(f"Frame {batch_idx}: Invalid pred_boxes shape {pred_boxes.shape}, skipping visualization.")
             continue
 
         # Scale predicted & ground-truth boxes to match camera resolution
@@ -329,7 +329,7 @@ with torch.no_grad():  # Disable gradient tracking for validation
         gt_boxes[:, [0, 2]] *= (camera_x.shape[-1] / 672.0)
         gt_boxes[:, [1, 3]] *= (camera_x.shape[-2] / 672.0)
 
-        print(f"\n🔍 Frame {batch_idx} — Final detections:")
+        print(f"\nFrame {batch_idx} — Final detections:")
         print(final_detections)
 
         # Visualize predictions
@@ -341,4 +341,4 @@ with torch.no_grad():  # Disable gradient tracking for validation
             iou_threshold=0.00
         )
 
-print("✅ Final Detection Visualization Complete.")
+print("Final Detection Visualization Complete.")
