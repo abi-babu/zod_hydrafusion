@@ -160,12 +160,12 @@ if os.path.exists(checkpoint):
     print("Resuming from checkpoint...")
     model.load_state_dict(torch.load(checkpoint, map_location=device))
 else:
-    print("🚀 Starting training from scratch...")
+    print("Starting training from scratch...")
 num_epochs = 5
 for epoch in range(num_epochs):
     model.train() 
     total_loss = 0
-    print(f"\n🚀 Epoch {epoch + 1} Training Started")
+    print(f"\nEpoch {epoch + 1} Training Started")
     for batch_idx, input_dict in enumerate(train_loader, start=1):
         optimizer.zero_grad()
         camera_x = input_dict.get("camera").to(device)
