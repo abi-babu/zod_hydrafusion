@@ -32,7 +32,7 @@ def plot_annotations(image, frame_id):
 # Iterate through all frames
 for frame_id in frame_ids:
     try:
-        print(f"\n🔄 Processing Frame ID: {frame_id}")
+        print(f"\nProcessing Frame ID: {frame_id}")
         zod_frame = zod_frames[frame_id]
         input_dict = {}
 
@@ -86,11 +86,11 @@ for frame_id in frame_ids:
                 #plot_annotations(image, frame_id)
 
             else:
-                print(f"⚠️ No vehicle annotations found for Frame {frame_id}")
+                print(f"No vehicle annotations found for Frame {frame_id}")
                 continue  # Skip frames with no vehicle
 
         except Exception as img_error:
-            print(f"❌ Error in image block (Frame {frame_id}): {img_error}")
+            print(f"Error in image block (Frame {frame_id}): {img_error}")
             continue
 
         # --- LIDAR PROCESSING ---
@@ -113,11 +113,11 @@ for frame_id in frame_ids:
             hydrafusion_inputs.append(input_dict)
 
         except Exception as lidar_error:
-            print(f"❌ Error in LiDAR block (Frame {frame_id}): {lidar_error}")
+            print(f"Error in LiDAR block (Frame {frame_id}): {lidar_error}")
             continue
 
     except Exception as e:
-        print(f"💥 General error for Frame {frame_id}: {e}")
+        print(f"General error for Frame {frame_id}: {e}")
         continue
 
 # Save processed data
@@ -125,4 +125,4 @@ output_file = "hydrafusion_inputs.pkl"
 with open(output_file, "wb") as f:
     pickle.dump(hydrafusion_inputs, f)
 
-print(f"\n✅ Successfully processed {len(hydrafusion_inputs)} frames. Data saved to '{output_file}'")
+print(f"\nSuccessfully processed {len(hydrafusion_inputs)} frames. Data saved to '{output_file}'")
