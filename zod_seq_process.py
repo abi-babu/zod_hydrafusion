@@ -31,7 +31,7 @@ stored_timestamps = set()
 # Iterate through filtered sequences
 for seq_id in sequence_ids:
     try:
-        print(f"\n🔄 Processing Sequence ID: {seq_id}")
+        print(f"\nProcessing Sequence ID: {seq_id}")
         seq = zod_sequences[seq_id]
 
 
@@ -41,12 +41,12 @@ for seq_id in sequence_ids:
         for camera_frame, lidar_frame in frames:
             frame_timestamp = camera_frame.time 
             if frame_timestamp in stored_timestamps:
-                print(f"⚠️ Skipping duplicate frame at time {frame_timestamp}")
+                print(f"Skipping duplicate frame at time {frame_timestamp}")
                 continue
         
             stored_timestamps.add(frame_timestamp) 
             if camera_frame.time in processed_timestamps:
-                print(f"⚠️ Skipping duplicate frame at time {camera_frame.time}")
+                print(f"Skipping duplicate frame at time {camera_frame.time}")
                 continue
             processed_timestamps.add(camera_frame.time)
        
@@ -55,7 +55,7 @@ for seq_id in sequence_ids:
                 input_dict = {}
                 image_path = sanitize_path(camera_frame.filepath)
                 if not os.path.exists(image_path):
-                    print(f"⚠️ Image not found: {image_path}")
+                    print(f"Image not found: {image_path}")
                     continue
 
                 # Open image and record original size
@@ -102,7 +102,7 @@ for seq_id in sequence_ids:
                 # **LIDAR PROCESSING**
                 lidar_path = sanitize_path(lidar_frame.filepath)
                 if not os.path.exists(lidar_path):
-                    print(f"⚠️ LiDAR file not found: {lidar_path}")
+                    print(f"LiDAR file not found: {lidar_path}")
                     continue
 
                 pc = np.load(lidar_path, allow_pickle=True)
@@ -133,11 +133,11 @@ for seq_id in sequence_ids:
                 #plt.show()
 
             except Exception as frame_error:
-                print(f"❌ Error processing frame {camera_frame.time}: {frame_error}")
+                print(f"Error processing frame {camera_frame.time}: {frame_error}")
                 continue
 
     except Exception as seq_error:
-        print(f"💥 General error for Sequence ID {seq_id}: {seq_error}")
+        print(f"General error for Sequence ID {seq_id}: {seq_error}")
         continue
 
 # Save processed data
@@ -145,4 +145,4 @@ output_file = "hydrafusion_inputs_sequences.pkl"
 with open(output_file, "wb") as f:
     pickle.dump(hydrafusion_inputs, f)
 
-print(f"\n✅ Successfully processed {len(hydrafusion_inputs)} frames from '000002'. Data saved to '{output_file}'")
+print(f"\nSuccessfully processed {len(hydrafusion_inputs)} frames from '000002'. Data saved to '{output_file}'")
