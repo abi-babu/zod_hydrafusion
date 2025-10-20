@@ -75,7 +75,6 @@ def box_iou(boxA, boxB):
     return interArea / union if union > 0 else 0.0
 
 def create_bev_from_lidar(xyz, intensity, bev_size=256):
-    # Ensure tensors are on CPU and flattened
     xyz = xyz.cpu().numpy().reshape(-1, 3)
     intensity = intensity.cpu().numpy().reshape(-1)
 
@@ -111,6 +110,7 @@ def create_bev_from_radar(xyz, bev_size=256):
         bev[0, y_idx[i], x_idx[i]] += 1
     bev[0] = np.clip(bev[0] / max(bev[0].max(), 1e-6), 0, 1)
     return torch.tensor(bev).unsqueeze(0)
+
 def flatten_losses(loss_dict):
     flat = {}
     for k, v in loss_dict.items():
@@ -120,6 +120,8 @@ def flatten_losses(loss_dict):
         else:
             flat[k] = v
     return flat
+
+#client selection
 def select_clients_by_mcp(client_subsets, coverage_fn, max_clients):
     selected, covered, remaining = [], set(), list(range(len(client_subsets)))
     while len(selected) < max_clients and remaining:
@@ -145,6 +147,7 @@ def label_coverage(subset):
             labels.update(sample_labels.tolist())
     return labels
 
+#Each client training
 def train_modality_client(model, dataloader, cfg, device, modality, epochs=3):
     model.to(device)
     model.train()
@@ -218,7 +221,7 @@ def train_modality_client(model, dataloader, cfg, device, modality, epochs=3):
     avg_client_loss = sum(epoch_losses) / len(epoch_losses) if epoch_losses else 0.0
     return model.state_dict(), avg_client_loss
 
-
+#Global server and client aggregation
 def federated_averaging(client_weights):
     avg_weights = copy.deepcopy(client_weights[0])
     for key in avg_weights.keys():
@@ -227,6 +230,7 @@ def federated_averaging(client_weights):
         avg_weights[key] = avg_weights[key] / len(client_weights)
     return avg_weights
 
+#Evaluation 
 def evaluate_model_map(model, dataset, cfg, device):
     model.eval()
     pred_boxes_list, pred_scores_list, gt_boxes_list = [], [], []
@@ -305,6 +309,7 @@ def compute_map(pred_boxes_list, pred_scores_list, gt_boxes_list, iou_threshold=
     recall = tp / (total_gt + 1e-6)
     return precision * recall
 
+#Main method
 def run_split_federated_training(pickle_path, rounds=5):
     modalities = ["camera", "lidar", "radar"]
     args = [
