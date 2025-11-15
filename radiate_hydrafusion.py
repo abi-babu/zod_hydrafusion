@@ -18,7 +18,7 @@ root_path = r"F:"
 sequence_name = "tiny_foggy"
 dt = 0.25
 
-seq = Sequence(os.path.join(root_path, sequence_name), config_file=r"C:\Users\lenovo\hydrafusion\radiate_sdk\config\config.yaml")
+seq = Sequence(os.path.join(root_path, sequence_name), config_file=r"F:\hydrafusion\radiate_sdk\config\config.yaml")
 
 # HydraFusion Config: camera disabled, radar + lidar enabled
 args = [
